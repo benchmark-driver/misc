@@ -1,13 +1,6 @@
 require 'active_record'
 
 ActiveRecord::Base.establish_connection(
-  # # k0kubun/railsbench
-  # adapter: 'postgresql',
-  # encoding: 'unicode',
-  # pool: 5,
-  # user: 'k0kubun',
-  # database: 'railsbench_production',
-
   adapter: 'sqlite3',
   database: ':memory:',
 )
@@ -26,23 +19,38 @@ class Post < ActiveRecord::Base
 end
 Post.create({ id: 1, title: "The Widening Gyre", body: "I believe consistency and orthogonality are tools of design, not the primary goal in design.", published: false })
 
+post = Post.find(1)
+lazy_hash = post.instance_variable_get(:@attributes).instance_variable_get(:@attributes)
+
 if RubyVM::MJIT.enabled?
   # --jit-wait
   i = 0
   while i < 10000
-    Post.find(1)
+    post.id
+    post.title
+    post.body
+    post.published
+    lazy_hash.instance_variable_set(:@delegate_hash, {})
     i += 1
   end
-else
-  Post.find(1)
 end
+
+puts post.id
+puts post.title
+puts post.body
+puts post.published
+lazy_hash.instance_variable_set(:@delegate_hash, {})
 
 puts "=="
 
 t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 i = 0
 while i < 100000
-  Post.find(1)
+  post.id
+  post.title
+  post.body
+  post.published
+  lazy_hash.instance_variable_set(:@delegate_hash, {})
   i += 1
 end
 puts(Process.clock_gettime(Process::CLOCK_MONOTONIC) - t)
