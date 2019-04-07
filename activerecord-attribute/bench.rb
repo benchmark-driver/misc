@@ -1,23 +1,16 @@
 require 'active_record'
 
 ActiveRecord::Base.establish_connection(
-  adapter: 'sqlite3',
-  database: ':memory:',
+  # k0kubun/railsbench
+  adapter: 'postgresql',
+  encoding: 'unicode',
+  pool: 5,
+  user: 'k0kubun',
+  database: 'railsbench_production',
 )
-
-ActiveRecord::Schema.define do
-  create_table :posts do |t|
-    t.string :title
-    t.text :body
-    t.boolean :published
-    t.datetime :created_at, null: false
-    t.datetime :updated_at, null: false
-  end
-end
 
 class Post < ActiveRecord::Base
 end
-Post.create({ id: 1, title: "The Widening Gyre", body: "I believe consistency and orthogonality are tools of design, not the primary goal in design.", published: false })
 
 post = Post.find(1)
 lazy_hash = post.instance_variable_get(:@attributes).instance_variable_get(:@attributes)
