@@ -1,6 +1,6 @@
 # Usage:
-#   CACHE=0 ruby bench.rb
-#   CACHE=1 ruby bench.rb
+#   INHERIT=0 ruby bench.rb
+#   INHERIT=1 ruby bench.rb
 require 'bundler/setup'
 require 'action_view'
 
@@ -8,9 +8,7 @@ map_key = :en
 map = Concurrent::Map.new
 map[map_key] = Object.new
 
-# ENV['CACHE'] ||= '1'
-
-if ENV['CACHE'] == '1'
+if ENV.fetch('INHERIT', '0') == '1'
   cache_key = 'show'
   cache = ActionView::Resolver::Cache::SmallCache.new
   cache[cache_key] = Object.new
@@ -24,7 +22,7 @@ end
 
 if RubyVM::MJIT.enabled?
   15.times { sleep 0.1 }
-  puts "compile1"
+  # puts "compile1"
 end
 
 i = 0
@@ -35,7 +33,7 @@ end
 
 if RubyVM::MJIT.enabled?
   15.times { sleep 0.1 }
-  puts "compile2"
+  # puts "compile2"
 end
 
 puts "--"
