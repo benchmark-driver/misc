@@ -38,6 +38,8 @@ if RubyVM::MJIT.enabled?
   puts "compile2"
 end
 
+puts "--"
+
 t = Process.clock_gettime(Process::CLOCK_MONOTONIC)
 i = 0
 while i < 20000000
